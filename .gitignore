@@ -8,3 +8,5 @@
 
 # Except folders
 !src/
+src/**
+!src/**.py
