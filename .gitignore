@@ -1,5 +1,5 @@
 # Ignore all
-/*
+*
 
 # Except these files
 !.gitignore
@@ -8,5 +8,10 @@
 
 # Except folders
 !src/
-src/**
-!src/**.py
+src/*
+!src/*.py
+!src/*.txt
+
+!src/sentsat_connector/
+src/sentsat_connector/*
+!src/sentsat_connector/*.py
