@@ -1,12 +1,7 @@
-from sys import platform
-from pandas.core.frame import DataFrame
 from sentinelsat import SentinelAPI
 from sentinelsat import exceptions
-from datetime import date
 import pandas as pd
 import time
-
-from sentinelsat.exceptions import LTAError
 
 class Sentinel:
     """SentinelSat wrapper class"""   
