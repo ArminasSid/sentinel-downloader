@@ -8,10 +8,7 @@
 
 # Except folders
 !src/
-src/*
-!src/*.py
-!src/*.txt
 
-!src/sentsat_connector/
-src/sentsat_connector/*
-!src/sentsat_connector/*.py
+# Additionally ignore these files
+__pycache__
+
