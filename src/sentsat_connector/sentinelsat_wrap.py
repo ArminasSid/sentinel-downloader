@@ -15,7 +15,7 @@ class Sentinel:
         self.api = SentinelAPI(user, passwd, api_url="https://scihub.copernicus.eu/dhus/")
 
 
-    def find_data(self, start: date, end: date, cloud: int, tiles: list[str], platformname: str = 'Sentinel-2') -> DataFrame:
+    def find_data(self, start, end, cloud, tiles, platformname = 'Sentinel-2'):
         products = {}
 
         for tile in tiles:
@@ -29,17 +29,17 @@ class Sentinel:
         return self.api.to_dataframe(products)
 
     
-    def to_csv(self, products_df: DataFrame, output_file: str):
+    def to_csv(self, products_df, output_file):
         products_df['complete'] = False
         products_df_sorted = products_df.sort_values(['cloudcoverpercentage', 'ingestiondate'], ascending=[True, True])
         products_df_sorted.to_csv(output_file)
 
     
-    def read_csv(self, csv_file: str) -> DataFrame:
+    def _read_csv(self, csv_file):
         return pd.read_csv(csv_file, index_col=0)
 
 
-    def __initiate_download___(self, product_id: str, dir: str) -> bool:
+    def _initiate_download(self, product_id, dir):
         try:
             is_online = self.api.is_online(product_id)
 
@@ -50,7 +50,7 @@ class Sentinel:
             else:
                 print('Product {} is offline. Triggering retrieval.'.format(product_id))
                 self.api.trigger_offline_retrieval(product_id)
-                time.sleep(10)
+                time.sleep(2)
         except exceptions.InvalidChecksumError as e:
             print("Invalid checksum detected, skipping.")
         except exceptions.ServerError as e:
@@ -61,18 +61,26 @@ class Sentinel:
         except exceptions.SentinelAPIError as e:
             print(e)
             print("Timeout 1000 seconds.")
-            time.sleep(10)
+            time.sleep(2)
         return False
 
 
-
-
-    def download(self, products_df: DataFrame, data_file: str, dir: str): 
+    def download(self, data_file: str, raster_dir: str):
+        # Load csv file and convert it to dict
+        products_df = self._read_csv(csv_file=data_file)
+        data = products_df.to_dict('index')
+        
         while not products_df[products_df['complete']==False].empty:
-            products_id = products_df.index.tolist()
-            for product_id in products_id:
-                self.__initiate_download___(product_id, dir)
+            # Iterate all product ids
+            for product_id in data:
+                if not data[f'{product_id}']['complete']:
+                    data[f'{product_id}']['complete'] = self._initiate_download(product_id=product_id, dir=raster_dir)
+                
+            # Update dataframe
+            products_df = pd.DataFrame.from_dict(data, orient='index')
+            
+            # Save dataframe to file
+            products_df.to_csv(data_file)
             
             print('After last iteration, products complete: {}'.format(len(products_df['complete']==True)))
         print('All products have been downloaded.')
-

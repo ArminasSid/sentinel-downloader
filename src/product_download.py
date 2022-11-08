@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
     try:
         sentsat = Sentinel(args.username, args.password)
-        sentsat.download(sentsat.read_csv(args.input), args.input, args.output)
+        sentsat.download(args.input, args.output)
 
 
     except UnauthorizedError as e:
