@@ -59,7 +59,7 @@ class Sentinel:
         except exceptions.SentinelAPIError as e:
             print(e)
             print("Timeout 1000 seconds.")
-            time.sleep(2)
+            time.sleep(10)
         return False
 
 
