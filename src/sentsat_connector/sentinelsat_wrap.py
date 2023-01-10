@@ -25,6 +25,9 @@ class Sentinel:
 
     
     def to_csv(self, products_df, output_file):
+        if not len(products_df):
+            print(f'No products found. File: {output_file} will not be created.')
+            return
         products_df['complete'] = False
         products_df_sorted = products_df.sort_values(['cloudcoverpercentage', 'ingestiondate'], ascending=[True, True])
         products_df_sorted.to_csv(output_file)
