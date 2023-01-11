@@ -56,6 +56,8 @@ class Sentinel:
         except exceptions.LTAError as e:
             print("LTA error received. Timeout 1000 seconds")
             time.sleep(10)
+        except exceptions.UnauthorizedError as e:
+            raise exceptions.UnauthorizedError(e)
         except exceptions.SentinelAPIError as e:
             print(e)
             print("Timeout 1000 seconds.")
