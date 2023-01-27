@@ -52,7 +52,7 @@ class Sentinel:
         except exceptions.InvalidChecksumError as e:
             print("Invalid checksum detected, skipping.")
         except exceptions.ServerError as e:
-            print("Server error, skipping.")
+            print(f'Server error: {e}, skipping.')
         except exceptions.LTAError as e:
             print("LTA error received. Timeout 1000 seconds")
             time.sleep(10)
